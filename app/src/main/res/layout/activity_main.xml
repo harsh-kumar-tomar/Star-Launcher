@@ -4,56 +4,229 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+
     android:background="@drawable/wallpaper"
+    tools:context=".MainActivity"
+
 
     >
+
     <TextView
         android:id="@+id/batteryPercentage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="700dp"
-        android:drawableRight="@drawable/baseline_percent_24"
+
+        android:layout_marginBottom="120dp"
+
         android:fontFamily="@font/varela_font"
         android:gravity="center_horizontal"
         android:text="52"
-        android:textColor="#fff"
-        android:textSize="40dp"
+        android:textColor="#000"
+
+        android:textSize="25dp"
+        android:translationZ="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
+
     <TextView
         android:id="@+id/textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginBottom="36dp"
+        android:background="@drawable/up"
         android:onClick="click"
-        android:text="Launch >"
+        android:text=""
         android:textColor="#fff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.671"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.609" />
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/minuteTV"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:fontFamily="@font/varela_font"-->
+    <!--        android:text="06"-->
+    <!--        android:textColor="#C6C4C4"-->
+    <!--        android:textSize="70dp"-->
+    <!--        app:layout_constraintEnd_toEndOf="@+id/hourTV"-->
+    <!--        app:layout_constraintHorizontal_bias="0.409"-->
+    <!--        app:layout_constraintStart_toStartOf="@+id/hourTV"-->
+    <!--        tools:layout_editor_absoluteY="156dp" />-->
 
     <TextView
-        android:id="@+id/dateTime"
+        android:id="@+id/hourTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="752dp"
-        android:fontFamily="@font/varela_font"
-        android:gravity="center_horizontal"
-        android:text="52"
-        android:textColor="#fff"
-        android:textSize="20dp"
+        android:layout_marginTop="124dp"
+        android:fontFamily="@font/poiretone_regular"
+        android:gravity="center"
+        android:text="6"
+        android:textColor="#C6C4C4"
+        android:textSize="70dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:rotation="180"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/percent10"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/background2" />
+
+        <ImageView
+            android:id="@+id/percent20"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/background2" />
+
+
+        <ImageView
+            android:id="@+id/percent30"
+
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/background2" />
+
+        <ImageView
+            android:id="@+id/percent40"
+
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/background2" />
+
+        <ImageView
+            android:id="@+id/percent50"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/background2" />
+
+        <ImageView
+            android:id="@+id/percent60"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/background2" />
+
+        <ImageView
+            android:id="@+id/percent70"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/background2" />
+
+        <ImageView
+            android:id="@+id/percent80"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/background2" />
+
+        <ImageView
+            android:id="@+id/percent90"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/background2" />
+
+        <ImageView
+            android:id="@+id/percent100"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/background2" />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/date_month_year"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="84dp"
+        android:fontFamily="@font/varela_font"
+        android:text="22 sep 2023"
+        android:textColor="#C6C4C4"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hourTV" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="130dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/textview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/app1"
+            android:onClick="addApptoHome"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/add_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/app2"
+            android:onClick="addApptoHome"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+
+            android:background="@drawable/add_icon"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/app3"
+            android:onClick="addApptoHome"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+
+            android:background="@drawable/add_icon"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/app4"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:onClick="addApptoHome"
+
+            android:background="@drawable/add_icon"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

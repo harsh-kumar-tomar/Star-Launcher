@@ -1,8 +1,15 @@
 package com.example.javaappversion16;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +20,25 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class AdapterAppList extends RecyclerView.Adapter<AdapterAppList.ViewHolder> {
     private ArrayList<StructAppInfo> appList;
     private Context context;
+    String secretcode;
 
-    public AdapterAppList(ArrayList<StructAppInfo> appList, Context context) {
+    public AdapterAppList(ArrayList<StructAppInfo> appList, Context context , String secretcode) {
         this.appList = appList;
         this.context = context;
+        this.secretcode = secretcode;
+    }
+    public AdapterAppList(ArrayList<StructAppInfo> appList, Context context ) {
+        this.appList = appList;
+        this.context = context;
+        this.secretcode = null;
     }
 
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -36,20 +52,56 @@ public class AdapterAppList extends RecyclerView.Adapter<AdapterAppList.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        StructAppInfo appInfo = appList.get(position);
 
-        holder.appNameTextView.setText(appInfo.getLabel());
-        holder.appIconImageView.setImageDrawable(appInfo.getIcon());
+        holder.appNameTextView.setText(appList.get(position).getLabel());
+//        Log.e("", "before icon");
+//        Bitmap a = getBitmapFromDrawable(appList.get(position).getIcon());
+//        holder.appIconImageView.setImageDrawable(a);
+
+
+        Log.e("", " before glide icon"+appList.get(position).getIcon());
+        try {
+            Drawable icon = context.getPackageManager().getApplicationIcon(appList.get(position).getPackageName());
+
+            Glide.with(context)
+                    .load(icon)
+                    .error(R.drawable.earth)
+                    .into(holder.appIconImageView);
+
+        }catch (Exception e)
+        {
+                    Log.e("", "error icon");
+
+        }
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Open the selected app
-                openApp(appInfo.getPackageName());
+
+                if (secretcode.equals("secretcode")) {
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("selectedPosition", position);
+                    ((AppDrawer) context).setResult(RESULT_OK, resultIntent);
+                    ((AppDrawer) context).finish();
+                } else {
+                    openApp(appList.get(position).getPackageName());
+                }
+
+
+
             }
         });
 
 
+    }
+    private Bitmap getBitmapFromDrawable(@NonNull Drawable drawable) {
+        final Bitmap bmp = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(bmp);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bmp;
     }
 
     @Override
