@@ -1,6 +1,7 @@
 package com.example.javaappversion16;
 
 import android.annotation.SuppressLint;
+import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,8 +9,11 @@ import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,15 +26,21 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GestureDetectorCompat;
 import androidx.core.view.MotionEventCompat;
@@ -39,44 +49,55 @@ import androidx.core.view.MotionEventCompat;
 import com.bumptech.glide.Glide;
 import com.example.javaappversion16.databinding.ActivityMainBinding;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    TextView txt ;
+    TextView txt;
     private TextView batteryPercentageTextView;
     private TextView currentDateTimeTextView;
     private GestureDetector gestureDetector;
-    TextView secondsTV , minuteTV , hourTV , date_month_year ;
-    ImageView percent10 , percent20 , percent30 , percent40 , percent50 , percent60 , percent70 , percent80 , percent90 , percent100 ;
-    ImageView app1  , app2  , app3 , app4 ;
-    ArrayList<StructAppInfo> appList ;
-    Animation blinkAnimation ;
-    int selectedValue ;
-    ArrayList<ImageView> percentageImageView ;
+    TextView secondsTV, minuteTV, hourTV, date_month_year;
+    ImageView percent10, percent20, percent30, percent40, percent50, percent60, percent70, percent80, percent90, percent100;
+    ImageView app1, app2, app3, app4;
+    ArrayList<StructAppInfo> appList;
+    Animation blinkAnimation;
+    int selectedValue, batteryFlag = 0;
+    int selectedPosition = 0;
+    ArrayList<ImageView> percentageImageView;
     private static final int REQUEST_CODE = 123;
+
+    HashMap<View, String> selected_icon = new HashMap<>();
+    ImageView selectedImageView;
 
     ActivityMainBinding binding;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
+    Drawable wallpaperDrawable;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-//        currentDateTimeTextView = findViewById(R.id.dateTime);
+
         gestureDetector = new GestureDetector(this, new MyGestureListener());
-//        secondsTV = findViewById(R.id.secondsTV);
-//        minuteTV = findViewById(R.id.minuteTV);
+
+
         hourTV = findViewById(R.id.hourTV);
         date_month_year = findViewById(R.id.date_month_year);
         percent10 = findViewById(R.id.percent10);
@@ -93,36 +114,6 @@ public class MainActivity extends AppCompatActivity {
         app2 = findViewById(R.id.app2);
         app3 = findViewById(R.id.app3);
         app4 = findViewById(R.id.app4);
-
-
-
-
-        app1.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Intent intent = new Intent(getApplicationContext() , AppDrawer.class);
-                intent.putExtra("secretcode" , "secretcode");
-                intent.putParcelableArrayListExtra(AppDrawer.EXTRA_APP_LIST, appList);
-                startActivityForResult(intent, REQUEST_CODE);
-
-//                app1.setImageResource(appList.get(selectedValue).getPackageName().);
-//                Drawable icon = null;
-//                try {
-//                    icon = getApplicationContext().getPackageManager().getApplicationIcon(appList.get(selectedValue).getPackageName());
-//                } catch (PackageManager.NameNotFoundException e) {
-//                    throw new RuntimeException(e);
-//                }
-//
-//                Glide.with(getApplicationContext())
-//                        .load(icon)
-//                        .error(R.drawable.earth)
-//                        .into(app1);
-
-                return true;
-            }
-        });
-
-
 
         percentageImageView = new ArrayList<>();
         percentageImageView.add(percent10);
@@ -145,62 +136,89 @@ public class MainActivity extends AppCompatActivity {
         blinkAnimation.setRepeatMode(Animation.REVERSE); // Reverse the animation when it repeats
 
 
-
-        // Hide the notification bar
-//        View decorView = getWindow().getDecorView();
-//        WindowInsetsController insetsController = decorView.getWindowInsetsController();
-//        if (insetsController != null) {
-//            insetsController.hide(WindowInsets.Type.systemBars());
-//        }
-        View decorView = getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
-
-
         Window window = getWindow();
-        window.setStatusBarColor(Color.parseColor("#000000"));
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getResources().getColor(android.R.color.transparent)); // Set to transparent
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        window.setNavigationBarColor(Color.parseColor("#120f16"));
+        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
-        batteryPercentageTextView = findViewById(R.id.batteryPercentage);
+
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         registerReceiver(batteryReceiver, intentFilter);
 
 
-
-        txt = findViewById(R.id.textview);
-         appList = loadInstalledApps();
+        appList = loadInstalledApps();
 
 
-        txt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        // add app to home screen by long pressing on the app
+        //open app from home screen by single app
 
-                Intent intent = new Intent(getApplicationContext() , AppDrawer.class ) ;
-                intent.putParcelableArrayListExtra(AppDrawer.EXTRA_APP_LIST, appList);
-                startActivity(intent);
-            }
-        });
+        binding.app1.setOnClickListener(clickListener);
+        binding.app2.setOnClickListener(clickListener);
+        binding.app3.setOnClickListener(clickListener);
+        binding.app4.setOnClickListener(clickListener);
+
+        binding.app1.setOnLongClickListener(longClickListener);
+        binding.app2.setOnLongClickListener(longClickListener);
+        binding.app3.setOnLongClickListener(longClickListener);
+        binding.app4.setOnLongClickListener(longClickListener);
 
 
     }
+
+
+
+
+
+    View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            PackageManager pm = getApplicationContext().getPackageManager();
+            Intent intent = pm.getLaunchIntentForPackage(selected_icon.get(v));
+                getApplicationContext().startActivity(intent);
+
+        }
+    } ;
+
+    View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+
+            selectedImageView = (ImageView) v ;
+
+            Intent intent = new Intent(getApplicationContext() , AppDrawer.class);
+            intent.putExtra("secretcode" , "secretcode");
+            intent.putParcelableArrayListExtra(AppDrawer.EXTRA_APP_LIST, appList);
+            startActivityForResult(intent, REQUEST_CODE);
+            overridePendingTransition(android.R.anim.fade_in , android.R.anim.fade_out);
+
+            return true;
+        }
+    };
+
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.e("TAG", "activity result:" );
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 if (data != null) {
-                    int selectedPosition = data.getIntExtra("selectedPosition", -1);
-                    if (selectedPosition != -1 && selectedPosition < appList.size()) {
-                        // Get the selected app's icon and update app1
-                        StructAppInfo selectedApp = appList.get(selectedPosition);
-                        Drawable icon = selectedApp.getIcon();
 
-                        // Update app1's icon using Glide or any other method
-                        Glide.with(getApplicationContext())
-                                .load(icon)
-                                .error(R.drawable.earth)
-                                .into(app1);
-                    }
+
+                    selectedPosition = data.getIntExtra("selectedPosition", -1);
+                    selected_icon.put(selectedImageView,appList.get(selectedPosition).getPackageName());
+
+                    Glide.with(getApplicationContext())
+                            .load(appList.get(selectedPosition).getIcon())
+                            .error(R.drawable.earth)
+                            .into(selectedImageView);
+
+
                 }
             } else if (resultCode == RESULT_CANCELED) {
                 // Handle the case where the user canceled the operation in AppDrawer
@@ -209,7 +227,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // Define a BroadcastReceiver to handle battery status changes
+
+    // BroadcastReceiver to handle battery status changes
     private BroadcastReceiver batteryReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -221,17 +240,13 @@ public class MainActivity extends AppCompatActivity {
                 float batteryPercentage = (level / (float) scale) * 100;
                 setBatteryImage(batteryPercentage);
 
-                // Display the battery percentage in the TextView
-                batteryPercentageTextView.setText(" " + (int) batteryPercentage);
-
 
                 int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-                boolean isCharging = (status == BatteryManager.BATTERY_STATUS_CHARGING
-                        || status == BatteryManager.BATTERY_STATUS_FULL);
+                boolean isCharging = (status == BatteryManager.BATTERY_STATUS_CHARGING);
 
-                if (isCharging) {
+                if (isCharging && batteryFlag==0) {
 
-                    setGreenColor();
+                    setChargingAnimation();
 
                 } else {
                     setBatteryImage(batteryPercentage);
@@ -239,78 +254,62 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+
         private void setBatteryImage(float batteryPercentage) {
-            if (batteryPercentage > 99) {
+            int[] percentages = {10, 20, 30, 40, 50, 60, 70, 80, 90, 99};
 
-            } else if (batteryPercentage > 90) {
-                setGrayColor(percent100);
-
-
-            } else if (batteryPercentage > 80) {
-                setGrayColor(percent100, percent90);
-
-            } else if (batteryPercentage > 70) {
-                setGrayColor(percent100, percent90, percent80);
-
-            } else if (batteryPercentage > 60) {
-                setGrayColor(percent100, percent90, percent80, percent70);
-            } else if (batteryPercentage > 50) {
-
-                setGrayColor(percent100, percent90, percent80, percent70, percent60);
-
-            } else if (batteryPercentage > 40) {
-                setGrayColor(percent100, percent90, percent80, percent70, percent60, percent50);
-
-            } else if (batteryPercentage > 30) {
-                setGrayColor(percent100, percent90, percent80, percent70, percent60, percent50, percent40);
-            } else if (batteryPercentage > 20) {
-
-                setGrayColor(percent100, percent90, percent80, percent70, percent60, percent50, percent40, percent30);
-
-
-            } else if (batteryPercentage > 10) {
-
-                setGrayColor(percent100, percent90, percent80, percent70, percent60, percent50, percent40, percent30, percent20);
-
+            for (int i = percentages.length - 1; i >= 0; i--) {
+                if (batteryPercentage > percentages[i]) {
+                    //set red color
+                    setGreenColor(percentageImageView.subList(0, i + 1));
+                    //set green color
+                    setRedColor(percentageImageView.subList(i + 1, percentageImageView.size()));
+                    break;
+                }
             }
         }
 
-        private void setGrayColor(ImageView... MultipleImageViews) {
+        private void setRedColor(List<ImageView> imageViews) {
 
-            for (ImageView a : MultipleImageViews) {
+            for (ImageView imageView : imageViews) {
+                imageView.setImageResource(R.drawable.background3);
+//                imageView.clearAnimation();
+            }
+        }
 
-                a.setImageResource(R.drawable.background3);
-                a.clearAnimation();
+
+        private void setGreenColor(List<ImageView> imageViews) {
+
+            if (!imageViews.isEmpty()) {
+                for (ImageView imageView : imageViews) {
+                    imageView.setImageResource(R.drawable.background2);
+//                    imageView.startAnimation(blinkAnimation); // Start animation
+                }
             }
 
         }
 
-        private void setGreenColor() {
-            Log.e("TAG", "setGreenColor:battery ");
-            Drawable desiredDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.background3, null); // Get the desired drawable
+        private void setChargingAnimation() {
+
+
+            Drawable desiredDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.background3, null);
 
             for (ImageView a : percentageImageView) {
+                Log.e("ANIM", "initial setGreenColor animation :battery ");
 
-                if ( a.getBackground().getConstantState().equals(desiredDrawable.getConstantState())) {
+                if (a.getBackground().getConstantState().equals(desiredDrawable.getConstantState())) {
                     {
+                        a.setImageResource(R.drawable.background2);
                         a.startAnimation(blinkAnimation);
-                        Log.e("ANIM", "setGreenColor:battery ");
+                        batteryFlag = 1 ;
+                        Log.e("ANIM", "setGreenColor animation :battery ");
                         break;
                     }
 
                 }
 
             }
-        }
 
-        private void setGreenColor(Animation blinkAnimation  , ImageView... MultipleImageViews ) {
-
-            for (ImageView a : MultipleImageViews) {
-
-                a.setImageResource(R.drawable.background2);
-                a.startAnimation(blinkAnimation);
-
-            }
 
         }
     };
@@ -338,25 +337,11 @@ public class MainActivity extends AppCompatActivity {
         handler.removeCallbacksAndMessages(null);
     }
 
-//    private void updateDateTime() {
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                // Get the current date and time
-//                SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy\n hh:mm:ss a", Locale.getDefault());
-//                String currentDateTime = dateFormat.format(new Date());
-//                // Set the current date and time to the TextView
-//                currentDateTimeTextView.setText(currentDateTime);
-//
-//                // Schedule the next update in 1 second (adjust as needed)
-//                handler.postDelayed(this, 1000);
-//            }
-//        }, 0); // Start updating immediately
-//    }
 
     public boolean onTouchEvent(MotionEvent event) {
         // Pass touch events to the GestureDetector
         gestureDetector.onTouchEvent(event);
+
         return super.onTouchEvent(event);
     }
 
@@ -402,7 +387,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void onSwipeUp() {
         // Implement your action for swiping up
-        Toast.makeText(this, "Swiped Up", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getApplicationContext() , AppDrawer.class ) ;
         intent.putParcelableArrayListExtra(AppDrawer.EXTRA_APP_LIST, appList);
         intent.putExtra("secretcode" , "fromapp1");
@@ -414,13 +398,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void onSwipeDown() {
         // Implement your action for swiping down
-        Toast.makeText(this, "Swiped Down", Toast.LENGTH_SHORT).show();
+        try {
+            Object service = getSystemService("statusbar");
+            Class<?> statusBarManager = Class.forName("android.app.StatusBarManager");
+
+            // If the StatusBarManager class is found, use reflection to call the expandNotificationsPanel method
+            if (service != null && statusBarManager != null) {
+                Method expandNotificationsPanel = statusBarManager.getMethod("expandNotificationsPanel");
+                expandNotificationsPanel.invoke(service);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void onSwipeLeft() {
         // Implement your action for left swipe
 
-        Toast.makeText(this, "Swiped Left", Toast.LENGTH_SHORT).show();
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             startActivity(cameraIntent);
@@ -431,7 +425,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void onSwipeRight() {
         // Implement your action for right swipe
-        Toast.makeText(this, "Swiped Right", Toast.LENGTH_SHORT).show();
        Intent cameraIntent = new Intent(Intent.ACTION_DIAL);
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             startActivity(cameraIntent);
@@ -441,7 +434,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateDateTime() {
+
+
         handler.postDelayed(new Runnable() {
+
+            @NonNull
+            String getMonthName(int month)
+            {
+                    switch (month)
+                    {
+                        case 1:     return "January";
+                        case 2:     return "February";
+                        case 3:     return "March";
+                        case 4:     return "April";
+                        case 5:     return "May";
+                        case 6:     return "June";
+                        case 7:     return "July";
+                        case 8:     return "August";
+                        case 9:     return "September";
+                        case 10:     return "October";
+                        case 11:     return "November";
+                        case 12:     return "December";
+
+
+                    }
+
+                    return "Nov";
+            }
             @Override
             public void run() {
                 // Get the current date and time
@@ -465,13 +484,15 @@ public class MainActivity extends AppCompatActivity {
                 String currentsecond = String.format(Locale.getDefault(), "%02d", second);
                 String currenthour = String.format(Locale.getDefault(), "%02d", hour);
                 String currentminute = String.format(Locale.getDefault(), "%02d", minute);
+                String currentMonth = getMonthName(month);
 
-                String current_Hour_Minute = String.format(Locale.getDefault(), "%2d:%02d",hour , minute);
-                String current_date_month_year = String.valueOf(day) + "/" + String.valueOf(month) + "/" + String.valueOf(year) ;
+                String current_Hour_Minute = String.format(Locale.getDefault(), "%2d:%02d ",hour , minute);
+                String current_date_month_year = String.valueOf(day) + " " + currentMonth + " "+"'"+ String.valueOf(year).substring(2,4) ;
 
 
                 hourTV.setText(String.valueOf(current_Hour_Minute));
                 date_month_year.setText(current_date_month_year);
+                binding.seconds.setText("."+currentsecond);
 
 
 

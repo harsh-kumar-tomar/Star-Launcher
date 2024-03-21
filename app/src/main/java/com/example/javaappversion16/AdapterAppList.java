@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,7 +61,6 @@ public class AdapterAppList extends RecyclerView.Adapter<AdapterAppList.ViewHold
 //        holder.appIconImageView.setImageDrawable(a);
 
 
-        Log.e("", " before glide icon"+appList.get(position).getIcon());
         try {
             Drawable icon = context.getPackageManager().getApplicationIcon(appList.get(position).getPackageName());
 
@@ -85,6 +86,8 @@ public class AdapterAppList extends RecyclerView.Adapter<AdapterAppList.ViewHold
                     resultIntent.putExtra("selectedPosition", position);
                     ((AppDrawer) context).setResult(RESULT_OK, resultIntent);
                     ((AppDrawer) context).finish();
+                    ((AppDrawer) context).overridePendingTransition(android.R.anim.fade_in , android.R.anim.fade_out);
+
                 } else {
                     openApp(appList.get(position).getPackageName());
                 }
@@ -94,15 +97,16 @@ public class AdapterAppList extends RecyclerView.Adapter<AdapterAppList.ViewHold
             }
         });
 
+        runAnimation(holder.itemView);
 
     }
-    private Bitmap getBitmapFromDrawable(@NonNull Drawable drawable) {
-        final Bitmap bmp = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        final Canvas canvas = new Canvas(bmp);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bmp;
+
+    void runAnimation (View view)
+    {
+        Animation animation = AnimationUtils.loadAnimation(context , android.R.anim.slide_in_left);
+        view.startAnimation(animation);
     }
+
 
     @Override
     public int getItemCount() {

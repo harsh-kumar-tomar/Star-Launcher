@@ -5,56 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    android:background="@drawable/wallpaper"
     tools:context=".MainActivity"
 
 
     >
+<!--to set wallpaper-->
 
-    <TextView
-        android:id="@+id/batteryPercentage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+    <ImageView
+        android:id="@+id/wallpaper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/space"
+        android:scaleType="centerCrop"
+        android:contentDescription="@null"
+        tools:ignore="ContentDescription" />
 
-        android:layout_marginBottom="120dp"
-
-        android:fontFamily="@font/varela_font"
-        android:gravity="center_horizontal"
-        android:text="52"
-        android:textColor="#000"
-
-        android:textSize="25dp"
-        android:translationZ="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/textview"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginBottom="36dp"
-        android:background="@drawable/up"
-        android:onClick="click"
-        android:text=""
-        android:textColor="#fff"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <!--    <TextView-->
-    <!--        android:id="@+id/minuteTV"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:fontFamily="@font/varela_font"-->
-    <!--        android:text="06"-->
-    <!--        android:textColor="#C6C4C4"-->
-    <!--        android:textSize="70dp"-->
-    <!--        app:layout_constraintEnd_toEndOf="@+id/hourTV"-->
-    <!--        app:layout_constraintHorizontal_bias="0.409"-->
-    <!--        app:layout_constraintStart_toStartOf="@+id/hourTV"-->
-    <!--        tools:layout_editor_absoluteY="156dp" />-->
 
     <TextView
         android:id="@+id/hourTV"
@@ -76,6 +41,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:rotation="180"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -169,47 +135,61 @@
         app:layout_constraintTop_toBottomOf="@+id/hourTV" />
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/seconds"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="130dp"
         android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/textview"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent">
+        android:padding="10dp"
+        android:text="56"
+        android:textColor="#F2B8FF"
+        android:textSize="20dp"
+        android:fontFamily="@font/poiretone_regular"
+
+        app:layout_constraintBottom_toBottomOf="@+id/hourTV"
+        app:layout_constraintStart_toEndOf="@+id/hourTV"
+        app:layout_constraintTop_toTopOf="@+id/hourTV"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="70dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
             android:id="@+id/app1"
-            android:onClick="addApptoHome"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_margin="10dp"
             android:background="@drawable/add_icon"
+            android:onClick="addApptoHome"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
             android:id="@+id/app2"
-            android:onClick="addApptoHome"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_margin="10dp"
-
             android:background="@drawable/add_icon"
+
+            android:onClick="addApptoHome"
 
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
             android:id="@+id/app3"
-            android:onClick="addApptoHome"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_margin="10dp"
-
             android:background="@drawable/add_icon"
+
+            android:onClick="addApptoHome"
 
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -219,14 +199,16 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_margin="10dp"
-            android:onClick="addApptoHome"
-
             android:background="@drawable/add_icon"
+
+            android:onClick="addApptoHome"
 
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
     </LinearLayout>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

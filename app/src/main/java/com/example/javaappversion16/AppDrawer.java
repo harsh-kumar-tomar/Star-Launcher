@@ -15,6 +15,7 @@
     import android.view.MotionEvent;
     import android.view.View;
     import android.view.Window;
+    import android.view.WindowManager;
     import android.widget.Toast;
 
     import java.util.ArrayList;
@@ -36,12 +37,23 @@
             gestureDetector = new GestureDetector(this, new MyGestureListener());
 
             // Hide the notification bar
-            View decorView = getWindow().getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-            decorView.setSystemUiVisibility(uiOptions);
-
+//            View decorView = getWindow().getDecorView();
+//            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+//            decorView.setSystemUiVisibility(uiOptions);
             Window window = getWindow();
-            window.setStatusBarColor(Color.parseColor("#000000"));
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(android.R.color.transparent)); // Set to transparent
+            View decorView = getWindow().getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+
+
+
+
+
+//
+//            Window window = getWindow();
+//            window.setStatusBarColor(Color.parseColor("#000000"));
             String secretcode = getIntent().getStringExtra("secretcode");
 
             initialize();
@@ -54,6 +66,8 @@
 
             recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.setAdapter(adapterAppList);
+
+
 
         }
 
@@ -117,7 +131,6 @@
 
         private void onSwipeUp() {
             // Implement your action for swiping up
-            Toast.makeText(this, "Swiped Up", Toast.LENGTH_SHORT).show();
 
 
 
@@ -125,20 +138,19 @@
 
         private void onSwipeDown() {
             // Implement your action for swiping down
-            Toast.makeText(this, "Swiped Down", Toast.LENGTH_SHORT).show();
             finish();
+            overridePendingTransition(android.R.anim.fade_in , android.R.anim.fade_out);
+
         }
 
         private void onSwipeLeft() {
             // Implement your action for left swipe
 
-            Toast.makeText(this, "Swiped Left", Toast.LENGTH_SHORT).show();
 
         }
 
         private void onSwipeRight() {
             // Implement your action for right swipe
-            Toast.makeText(this, "Swiped Right", Toast.LENGTH_SHORT).show();
 
         }
 
