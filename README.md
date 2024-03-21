@@ -1,14 +1,20 @@
-
 <h1>Star Launcher</h1>
     A simplistic and tidy home launcher designed for your smartphone.
     As my screen time began to increase, I decided to develop a launcher with the goal of reducing time spent on my device.
 <br>
 <br>
 <div>
-<img src="https://github.com/harsh-kumar-tomar/Star-Launcher/assets/114944825/fa22305c-b011-46b9-9208-949da28df806" alt="Image 1" width="200">
-<img src="https://github.com/harsh-kumar-tomar/Star-Launcher/assets/114944825/1b9c82b3-2f45-43ff-bbbb-104801f6ed66" alt="Image 1" width="200">
-<img src="https://github.com/harsh-kumar-tomar/Star-Launcher/assets/114944825/6495ec91-66ea-4c7a-a06d-9832878a31c1" alt="Image 1" width="200">
+
+
+<img src="https://github.com/harsh-kumar-tomar/Star-Launcher/assets/114944825/bb73b957-ee10-437d-9639-6479e7e9e528" alt="Image 1" width="250">
+<img src="https://github.com/harsh-kumar-tomar/Star-Launcher/assets/114944825/d11da302-60dc-4ef4-be4f-bed44d1c6f21" alt="Image 1" width="250">
+<img src="https://github.com/harsh-kumar-tomar/Star-Launcher/assets/114944825/b9040895-c485-45f9-a1f9-3697fa61d9c9" alt="Image 1" width="250">
 </div>
+
+<h2>How to use ?</h2>
+    <p>You can directly install the anime-wallpaper.apk in your android smartphone.Before installing make sure your android version is 10 or above </p>
+
+
 
 <h2>Features</h2>
 <ul>
