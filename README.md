@@ -12,7 +12,7 @@
 </div>
 
 <h2>How to use ?</h2>
-    <p>You can directly install the anime-wallpaper.apk in your android smartphone.Before installing make sure your android version is 10 or above </p>
+    <p>You can directly install the star-launcher.apk in your android smartphone.Before installing make sure your android version is 10 or above </p>
 
 
 
